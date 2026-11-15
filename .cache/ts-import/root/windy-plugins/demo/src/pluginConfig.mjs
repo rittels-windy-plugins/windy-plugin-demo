@@ -1,6 +1,6 @@
 const config = {
     name: 'windy-plugin-demo',
-    version: '0.0.7',
+    version: '0.0.8',
     icon: 'i',
     title: 'Demo plugin',
     description: 'This is a demo plugin',

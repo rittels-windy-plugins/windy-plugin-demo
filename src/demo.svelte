@@ -38,6 +38,7 @@
                     </li>
                 {/each}
             </div>
+            target: {W.rootScope.target}
         </div>
         <Footer onFooterClick={onFooter}/>
     </div>
@@ -171,5 +172,5 @@
 </script>
 
 <style lang="less">
-    @import 'demo.less?1751885288675';
+    @import 'demo.less?1794736429635';
 </style>

@@ -33,8 +33,9 @@ function addDrag(el, onDrag, onDragEnd = () => {}) {
         mouseDown = false;
         document.removeEventListener('mouseup', handleEnd);
         document.removeEventListener('mousemove', handleMove);
-        let pos = e.targetTouches ? e.targetTouches[0] : e;
-        //console.log('end', e);
+        let pos =
+            e.targetTouches && e.targetTouches.length ? e.targetTouches[0] : e.changedTouches && e.changedTouches.length ? e.changedTouches[0] : e;
+
         onDragEnd(leftOffs + pos.pageX, topOffs + pos.pageY, initialParentPos);
     };
     const handleCancel = e => {
@@ -167,6 +168,30 @@ function makeTopLeftHandle(el, div, callback) {
     });
 }
 
+function setInfoSize(size, div) {
+    let { left, top, width, height } = size;
+    if (left === undefined) left = div.offsetLeft;
+    if (top === undefined) top = div.offsetTop;
+    if (width === undefined) width = div.offsetWidth;
+    if (height === undefined) height = div.offsetHeight;
+    const { id } = div;
+    const name = id.replace('-info', '');
+    div.style.left = left + 'px';
+    div.style.top = top + 'px';
+    div.style.height = height + 'px';
+    div.style.width = width + 'px';
+    bcast.fire('infoWinResized', {
+        left,
+        top,
+        width,
+        height,
+        id,
+        name,
+        dragging: false,
+        wasDragged: false,
+    });
+}
+
 function getWrapDiv() {
     let wrapDiv = document.getElementById('ext-plugin-info-wrapper');
     if (!wrapDiv) {
@@ -181,8 +206,10 @@ function getWrapDiv() {
  * It places the embedded plugin in small when tablet is used
  * */
 function embedForTablet(thisPlugin) {
-    let node = thisPlugin.window.node;
-    if (isTablet && thisPlugin.pane == 'embedded') {
+    let node = $('#plugin-' + thisPlugin.ident);
+    //console.log('node', node);
+    //console.log('is', isTablet, thisPlugin.pane);
+    if (isTablet && (thisPlugin.pane == 'embedded' || thisPlugin.pane == 'small-bottom-bottom')) {
         node.classList.remove('fg-white', 'bg-transparent-blur', 'rounded-box');
         node.classList.add('plugin-mobile-bottom-small');
         document.querySelector('[data-plugin="bottom-below-controls-mobile"]').appendChild(node);
@@ -215,6 +242,7 @@ function showMsg(messageDiv, m, timeout = 30 * 1000) {
  * @param {*} messageDiv - ref to the message div
  */
 function checkVersion(messageDiv) {
+    return;
     http.get('/articles/plugins/list').then(({ data }) => {
         let pluginInList = data.find(e => e.name == config.name);
         if (!pluginInList) {
@@ -277,4 +305,5 @@ export {
     openFullscreen,
     closeFullscreen,
     toggleFullscreen,
+    setInfoSize
 };

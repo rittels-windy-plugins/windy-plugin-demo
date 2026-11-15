@@ -78,6 +78,7 @@
     #device-mobile &,
     #device-tablet & {
         right: 8px;
+        top:  calc(4px + env(safe-area-inset-top));
         width: auto;
         background-color: #404040ff;
 
@@ -117,4 +118,9 @@
     &::-webkit-scrollbar-track {
         background: 0 0;
     }
+}
+
+#device-mobile #plugin-@{name},
+#device-tablet #plugin-@{name} {
+    pointer-events: initial;
 }
